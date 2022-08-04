@@ -1,0 +1,367 @@
+Script started on Tue Nov 24 17:19:38 2020
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz12[0m[27m[24m[JNikon@MBP-Nikon tz12 % [K[?2004hexitR --no-save <task.r[?2004l
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #2. Для собственных данных построить доверительные интервалы для модели регрессии и интервал предсказаний.
+> #3. Модифицировать функцию regr() для расчета возраста Вселенной с помощью бутстрепа.
+> #4. Изучить коэффициент детерминации (R-squared и adjusted R-squared) как критерий качества аппроксимации моделью.
+> 
+> library(ggplot2)
+> library(dplyr)
+
+Присоединяю пакет: ‘dplyr’
+
+Следующие объекты скрыты от ‘package:stats’:
+
+    filter, lag
+
+Следующие объекты скрыты от ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(car)
+Загрузка требуемого пакета: carData
+
+Присоединяю пакет: ‘car’
+
+Следующий объект скрыт от ‘package:dplyr’:
+
+    recode
+
+> library(arm)
+Загрузка требуемого пакета: MASS
+
+Присоединяю пакет: ‘MASS’
+
+Следующий объект скрыт от ‘package:dplyr’:
+
+    select
+
+Загрузка требуемого пакета: Matrix
+Загрузка требуемого пакета: lme4
+Registered S3 methods overwritten by 'lme4':
+  method                          from
+  cooks.distance.influence.merMod car 
+  influence.merMod                car 
+  dfbeta.influence.merMod         car 
+  dfbetas.influence.merMod        car 
+
+arm (Version 1.11-2, built: 2020-7-27)
+
+Working directory is /Users/Nikon/Desktop/CMC MSU/MC/5 sem/R/tz12
+
+
+Присоединяю пакет: ‘arm’
+
+Следующий объект скрыт от ‘package:car’:
+
+    logit
+
+> library(corrplot)
+corrplot 0.84 loaded
+
+Присоединяю пакет: ‘corrplot’
+
+Следующий объект скрыт от ‘package:arm’:
+
+    corrplot
+
+> library(gamair)
+> library(boot)
+
+Присоединяю пакет: ‘boot’
+
+Следующий объект скрыт от ‘package:arm’:
+
+    logit
+
+Следующий объект скрыт от ‘package:car’:
+
+    logit
+
+> data(hubble)
+> library(gridExtra)
+
+Присоединяю пакет: ‘gridExtra’
+
+Следующий объект скрыт от ‘package:dplyr’:
+
+    combine
+
+> 
+> head <- read.csv("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/AAPL.csv",
++                 header = TRUE)
+> num <- random <- sample(1:2, nrow(head), replace=TRUE)
+> num2 <- random <- sample(1:2, nrow(head), replace=TRUE)
+> head <- cbind(head, num)
+> head <- cbind(head, num2)
+> data <- head[-c(2,3,4,6)]
+> data$Date <- as.POSIXct(data$Date, format = "%Y-%m-%d")
+> 
+> state <- as.data.frame(data[,c("Close", "Volume", "num", "num2")])
+> M <- cor(state)
+> col4 <- colorRampPalette(c("#7F0000","#FF7F00", "#7FFF7F", "#007FFF","#000000"))
+> corrplot(M, method="pi", col=col4(10), cl.length = 11,
++          order = "AOE", addCoef.col = "red")
+> 
+> ggplot(data, aes(x = data$Close, data$Volume)) + geom_point() + 
++     geom_smooth(method = "lm", se = FALSE) + 
++     ylab("Volume") + xlab("Close")
+`geom_smooth()` using formula 'y ~ x'
+Предупреждения:
+1: Use of `data$Close` is discouraged. Use `Close` instead. 
+2: Use of `data$Volume` is discouraged. Use `Volume` instead. 
+3: Use of `data$Close` is discouraged. Use `Close` instead. 
+4: Use of `data$Volume` is discouraged. Use `Volume` instead. 
+> model <- lm(data$Volume ~ data$Close, data)
+> summary(model)
+
+Call:
+lm(formula = data$Volume ~ data$Close, data = data)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-110916645  -50296746  -18178539   30388338  490863931 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 171532486    4538908  37.792  < 2e-16 ***
+data$Close    -526424      95473  -5.514 4.12e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 71650000 on 1508 degrees of freedom
+Multiple R-squared:  0.01976,	Adjusted R-squared:  0.01911 
+F-statistic:  30.4 on 1 and 1508 DF,  p-value: 4.124e-08
+
+> confint(model)
+                  2.5 %      97.5 %
+(Intercept) 162629244.8 180435727.2
+data$Close    -713697.8   -339150.6
+> confint(model, level = 0.99)
+                  0.5 %      99.5 %
+(Intercept) 159826219.0 183238753.0
+data$Close    -772657.6   -280190.9
+> coefplot(model, parm = -2)
+Предупреждения:
+1: В plot.window(...) : "parm" -- не графический параметр
+2: В plot.xy(xy, type, ...) : "parm" -- не графический параметр
+3: В title(...) : "parm" -- не графический параметр
+> 
+> ggplot(data, aes(x = data$Date, data$Volume)) + geom_point() + 
++ 	geom_smooth(method = "lm", se = FALSE) + 
++ 	ylab("Volume") + xlab("Date")
+`geom_smooth()` using formula 'y ~ x'
+Предупреждения:
+1: Use of `data$Date` is discouraged. Use `Date` instead. 
+2: Use of `data$Volume` is discouraged. Use `Volume` instead. 
+3: Use of `data$Date` is discouraged. Use `Date` instead. 
+4: Use of `data$Volume` is discouraged. Use `Volume` instead. 
+> model <- lm(data$Volume ~ data$Date, data)
+> summary(model)
+
+Call:
+lm(formula = data$Volume ~ data$Date, data = data)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-128257302  -46882851  -15861550   27163194  471824127 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  8.064e+08  4.844e+07   16.65   <2e-16 ***
+data$Date   -4.370e-01  3.216e-02  -13.59   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 68310000 on 1508 degrees of freedom
+Multiple R-squared:  0.1091,	Adjusted R-squared:  0.1085 
+F-statistic: 184.6 on 1 and 1508 DF,  p-value: < 2.2e-16
+
+> confint(model)
+                    2.5 %        97.5 %
+(Intercept)  7.114074e+08  9.014350e+08
+data$Date   -5.000687e-01 -3.739053e-01
+> confint(model, level = 0.99)
+                    0.5 %        99.5 %
+(Intercept)  6.814940e+08  9.313484e+08
+data$Date   -5.199288e-01 -3.540451e-01
+> coefplot(model, parm = -2)
+Предупреждения:
+1: В plot.window(...) : "parm" -- не графический параметр
+2: В plot.xy(xy, type, ...) : "parm" -- не графический параметр
+3: В title(...) : "parm" -- не графический параметр
+> ggplot(data, aes(x = data$Date, data$Close)) + geom_point() + 
++     geom_smooth(method = "lm", se = FALSE) + 
++     ylab("Close") + xlab("Date")
+`geom_smooth()` using formula 'y ~ x'
+Предупреждения:
+1: Use of `data$Date` is discouraged. Use `Date` instead. 
+2: Use of `data$Close` is discouraged. Use `Close` instead. 
+3: Use of `data$Date` is discouraged. Use `Date` instead. 
+4: Use of `data$Close` is discouraged. Use `Close` instead. 
+> model <- lm(data$Close ~ data$Date, data)
+> summary(model)
+
+Call:
+lm(formula = data$Close ~ data$Date, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-20.058  -6.545  -3.123   4.835  63.111 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -4.004e+02  7.551e+00  -53.02   <2e-16 ***
+data$Date    2.949e-07  5.013e-09   58.82   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 10.65 on 1508 degrees of freedom
+Multiple R-squared:  0.6964,	Adjusted R-squared:  0.6962 
+F-statistic:  3459 on 1 and 1508 DF,  p-value: < 2.2e-16
+
+> confint(model)
+                    2.5 %        97.5 %
+(Intercept) -4.151895e+02 -3.855671e+02
+data$Date    2.850223e-07  3.046892e-07
+> confint(model, level = 0.99)
+                    0.5 %        99.5 %
+(Intercept) -4.198525e+02 -3.809040e+02
+data$Date    2.819264e-07  3.077851e-07
+> coefplot(model, parm = -2)
+Предупреждения:
+1: В plot.window(...) : "parm" -- не графический параметр
+2: В plot.xy(xy, type, ...) : "parm" -- не графический параметр
+3: В title(...) : "parm" -- не графический параметр
+> 
+> BD <- read.table("https://raw.githubusercontent.com/rasbt/python-machine-learning-book-2nd-edition/master/code/ch10/housing.data.txt")
+> state <- as.data.frame(BD)
+> M <- cor(state)
+> corrplot(M, method="pi", col=col4(10), cl.length = 11,
++          order = "AOE", addCoef.col = "red")
+> 
+> ggplot(BD, aes(x = BD$V13, BD$V14)) + geom_point() + 
++     geom_smooth(method = "lm", se = FALSE) + 
++     ylab("MEDV") + xlab("LSTAT")
+`geom_smooth()` using formula 'y ~ x'
+Предупреждения:
+1: Use of `BD$V13` is discouraged. Use `V13` instead. 
+2: Use of `BD$V14` is discouraged. Use `V14` instead. 
+3: Use of `BD$V13` is discouraged. Use `V13` instead. 
+4: Use of `BD$V14` is discouraged. Use `V14` instead. 
+> model <- lm(BD$V14 ~ BD$V13, data)
+> summary(model)
+
+Call:
+lm(formula = BD$V14 ~ BD$V13, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.168  -3.990  -1.318   2.034  24.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
+BD$V13      -0.95005    0.03873  -24.53   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 6.216 on 504 degrees of freedom
+Multiple R-squared:  0.5441,	Adjusted R-squared:  0.5432 
+F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
+
+> confint(model)
+                2.5 %     97.5 %
+(Intercept) 33.448457 35.6592247
+BD$V13      -1.026148 -0.8739505
+> confint(model, level = 0.99)
+                0.5 %     99.5 %
+(Intercept) 33.099101 36.0085810
+BD$V13      -1.050199 -0.8498995
+> coefplot(model, parm = -2)
+Предупреждения:
+1: В plot.window(...) : "parm" -- не графический параметр
+2: В plot.xy(xy, type, ...) : "parm" -- не графический параметр
+3: В title(...) : "parm" -- не графический параметр
+> 
+> hubble$x <- hubble$x*3.09e19
+> hubble$y <- hubble$y*60^2*24*365.25
+> 
+> regr <- function(data, indices)
++ {
++ 	BD <- data[indices, ]
++ 	fit <- lm(x ~ -1 + y, data = BD)
++ 	return(summary(fit)$coefficients[1])
++ }
+> 
+> results <- boot(data = hubble, statistic = regr, R = 1000)
+> results
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = hubble, statistic = regr, R = 1000)
+
+
+Bootstrap Statistics :
+       original   bias    std. error
+t1* 12043469157 49709727   686308527
+> h.lower <- quantile(results$t, 0.025)
+> h.upper <- quantile(results$t, 0.975)
+> c(h.lower, h.upper)
+       2.5%       97.5% 
+10886278515 13540071760 
+> boot.ci(results, type = "bca")
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 1000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = results, type = "bca")
+
+Intervals : 
+Level       BCa          
+95%   (10804283750, 13471841771 )  
+Calculations and Intervals on Original Scale
+> 
+> M <- lm(y ~ x - 1, data = hubble)
+> hubble$fit = fitted(M)
+> 
+> p1 = ggplot(hubble, aes(x, y)) + geom_point() +
++   geom_hline(aes(yintercept=mean(hubble$y)), color = "red") +
++   geom_segment(aes(x = x, y = y, xend = x, yend = mean(hubble$y))) +
++   ggtitle("TSS")
+> 
+> p2 = ggplot(hubble, aes(x, y)) + geom_point() +
++   geom_smooth(method = "lm", se = FALSE, color = "red") +
++   geom_segment(aes(x = x, y = y, xend = x, yend = fit)) +
++   ggtitle("RSS")
+> grid.arrange(p1, p2, ncol = 2)
+`geom_smooth()` using formula 'y ~ x'
+Предупреждения:
+1: Use of `hubble$y` is discouraged. Use `y` instead. 
+2: Use of `hubble$y` is discouraged. Use `y` instead. 
+> 
+> 
+> 
+> 
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz12[0m[27m[24m[JNikon@MBP-Nikon tz12 % [K[?2004hR --no-save <task.r[19Dexit               [15D[?2004l
+
+Script done on Tue Nov 24 17:19:45 2020

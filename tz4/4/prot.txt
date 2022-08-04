@@ -1,0 +1,52 @@
+Script started on Tue Oct  6 16:47:46 2020
+[?1034hbash-3.2$ R --no-save <task4.r 
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #Используя функцию pie, нарисовать пример круговой диаграммы для собственных данных
+> 
+> head <- read.csv("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/AAPL.csv",
++                 header = TRUE)
+> num <- read.table("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/table.txt")
+> head <- cbind(head, num)
+> data <- head[-c(2,3,4,6)]
+> names(data)
+[1] "Date"   "Close"  "Volume" "V1"    
+> tmp <- data
+> j = 1
+> i = 1480
+> tmp <- data[-c(j:i),]
+> res <- tapply(tmp$Volume, as.factor(tmp$Close), length)
+> pie(res, labels = names(res), edges = 300, radius = 1, 
++ 	col = c("blue","green","red","yellow"))
+> 
+> #tmp_vector <- rep(0, 1500)
+> #tmpp <- levels(tmp$Volume)
+> #for (i in 1:length(tmp$Volume))
+> #	for (j in length(levels(tmp$Volume)))
+> #		if (as.character(tmp$Volume)[i] == tmpp[j])
+> #			tmp_vector[j] <- tmp_vector[j]+1
+> #names(tmp_vector) <- tmpp
+> #pie(tmp_vector)
+> 	
+> 
+> 
+bash-3.2$ exit
+exit
+
+Script done on Tue Oct  6 16:47:49 2020

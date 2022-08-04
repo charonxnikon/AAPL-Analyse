@@ -1,0 +1,79 @@
+Script started on Wed Nov 18 15:44:52 2020
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz10/2[0m[27m[24m[JNikon@MBP-Nikon 2 % [K[?2004hexitR --no-save <task2.r [?2004l
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #3. Изучить форму связи между переменными для выбранных данных.
+> #4. Изучить взаимодействие между предикторами для выбранных данных.
+> 
+> library(faraway)
+> library("dplyr")
+
+Присоединяю пакет: ‘dplyr’
+
+Следующие объекты скрыты от ‘package:stats’:
+
+    filter, lag
+
+Следующие объекты скрыты от ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> 
+> 
+> head <- read.csv("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/AAPL.csv",
++                 header = TRUE)
+> num <- random <- sample(1:2, nrow(head), replace=TRUE)
+> num2 <- random <- sample(1:2, nrow(head), replace=TRUE)
+> head <- cbind(head, num)
+> head <- cbind(head, num2)
+> data <- head[-c(2,3,4,6)]
+> data$Date <- as.POSIXct(data$Date, format = "%Y")
+> data <- mutate_each(data, "factor", Date, Close)
+Предупреждения:
+1: `funs_()` is deprecated as of dplyr 0.7.0.
+Please use `funs()` instead.
+See vignette('programming') for more help
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+2: `funs()` is deprecated as of dplyr 0.8.0.
+Please use a list of either functions or lambdas: 
+
+  # Simple named list: 
+  list(mean = mean, median = median)
+
+  # Auto named with `tibble::lst()`: 
+  tibble::lst(mean, median)
+
+  # Using lambdas
+  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+3: `mutate_each_()` is deprecated as of dplyr 0.7.0.
+Please use `across()` instead.
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+> mk <- lm(data$Volume ~ data$Date + data$Close)
+> interaction.plot(data$Close, data$Date, data$Volume)
+> interaction.plot(data$Date, data$num, data$Volume)
+> 
+> 
+> 
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz10/2[0m[27m[24m[JNikon@MBP-Nikon 2 % [K[?2004heexit[?2004l
+
+Script done on Wed Nov 18 15:44:58 2020

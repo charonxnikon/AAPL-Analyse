@@ -1,0 +1,91 @@
+Script started on Wed Nov 18 16:07:19 2020
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz10/5[0m[27m[24m[JNikon@MBP-Nikon 5 % [K[?2004h[7m R --no-save <task5.r [27m[22D[27m [27mR[27m [27m-[27m-[27mn[27mo[27m-[27ms[27ma[27mv[27me[27m [27m<[27mt[27ma[27ms[27mk[27m5[27m.[27mr[27m [?2004l
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #Построить график автокорреляцоионной функции
+> 
+> library("dplyr")
+
+Присоединяю пакет: ‘dplyr’
+
+Следующие объекты скрыты от ‘package:stats’:
+
+    filter, lag
+
+Следующие объекты скрыты от ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(psych)
+> library(corrplot)
+corrplot 0.84 loaded
+> 
+> head <- read.csv("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/AAPL.csv",
++                 header = TRUE)
+> num <- random <- sample(1:2, nrow(head), replace=TRUE)
+> num2 <- random <- sample(1:2, nrow(head), replace=TRUE)
+> head <- cbind(head, num)
+> head <- cbind(head, num2)
+> data <- head[-c(2,3,4,6)]
+> data$Date <- as.POSIXct(data$Date, format = "%Y")
+> data <- mutate_each(data, "factor", Date)
+Предупреждения:
+1: `funs_()` is deprecated as of dplyr 0.7.0.
+Please use `funs()` instead.
+See vignette('programming') for more help
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+2: `funs()` is deprecated as of dplyr 0.8.0.
+Please use a list of either functions or lambdas: 
+
+  # Simple named list: 
+  list(mean = mean, median = median)
+
+  # Auto named with `tibble::lst()`: 
+  tibble::lst(mean, median)
+
+  # Using lambdas
+  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+3: `mutate_each_()` is deprecated as of dplyr 0.7.0.
+Please use `across()` instead.
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+> state <- as.data.frame(data[,c("Close", "Volume", "num", "num2")])
+> mk <- lm(data$Volume ~ data$Date + data$Close, state)
+> M <- cor(state)
+> col4 <- colorRampPalette(c("#7F0000","#FF7F00", "#7FFF7F", "#007FFF","#000000"))
+> corrplot(M, method = "color", col=col4(10), cl.length = 11,
++          order = "AOE", addCoef.col = "red")
+> corrplot(M, method="shade", col=col4(10), cl.length = 11,
++          order = "AOE", addCoef.col = "red")
+> corrplot(M, method="pi", col=col4(10), cl.length = 11,
++          order = "AOE", addCoef.col = "red")
+> 
+> pairs.panels(data, 
++              method = "pearson", 
++              hist.col = "#00AFBB",
++              density = TRUE,  
++              ellipses = TRUE 
++ )
+> 
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz10/5[0m[27m[24m[JNikon@MBP-Nikon 5 % [K[?2004h R --no-save <task5.r [22Dexit                 [17D[?2004l
+
+Script done on Wed Nov 18 16:07:22 2020

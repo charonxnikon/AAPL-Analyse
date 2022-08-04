@@ -1,0 +1,133 @@
+Script started on Wed Nov 18 14:40:45 2020
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz9/2[0m[27m[24m[JNikon@MBP-Nikon 2 % [K[?2004hexitR --no-save <task2.r[?2004l
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #3. Изучить возможности функции power.prop.test() и разобраться с вычислением статистической мощности при сравнении частот.
+> 
+> 
+> library(reshape2)
+> library(pwr)
+> library(dplyr)
+
+Присоединяю пакет: ‘dplyr’
+
+Следующие объекты скрыты от ‘package:stats’:
+
+    filter, lag
+
+Следующие объекты скрыты от ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> 
+> head <- read.csv("/Users/Nikon/Desktop/CMC MSU/MC/5 sem/Data/AAPL.csv",
++                 header = TRUE)
+> num <- random <- sample(1:2, nrow(head), replace=TRUE)
+> num2 <- random <- sample(1:2, nrow(head), replace=TRUE)
+> head <- cbind(head, num)
+> head <- cbind(head, num2)
+> data <- head[-c(2,3,4,6)]
+> data <- mutate_each(data, "factor", Volume, Date)
+Предупреждения:
+1: `funs_()` is deprecated as of dplyr 0.7.0.
+Please use `funs()` instead.
+See vignette('programming') for more help
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+2: `funs()` is deprecated as of dplyr 0.8.0.
+Please use a list of either functions or lambdas: 
+
+  # Simple named list: 
+  list(mean = mean, median = median)
+
+  # Auto named with `tibble::lst()`: 
+  tibble::lst(mean, median)
+
+  # Using lambdas
+  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+3: `mutate_each_()` is deprecated as of dplyr 0.7.0.
+Please use `across()` instead.
+[90mThis warning is displayed once every 8 hours.[39m
+[90mCall `lifecycle::last_warnings()` to see where this warning was generated.[39m 
+> 
+> power.prop.test(n = 20000, p1 = 0.6, p2 = 0.3, sig.level = 0.05,
++                 power = NULL,
++                 alternative = c("two.sided", "one.sided"),
++                 strict = FALSE, tol = .Machine$double.eps^0.25)
+
+     Two-sample comparison of proportions power calculation 
+
+              n = 20000
+             p1 = 0.6
+             p2 = 0.3
+      sig.level = 0.05
+          power = 1
+    alternative = two.sided
+
+NOTE: n is number in *each* group
+
+> 
+> pwr.p.test(h = ES.h(p1 = 0.65, p2 = 0.50),
++            sig.level = 0.05,
++            power = 0.80)
+
+     proportion power calculation for binomial distribution (arcsine transformation) 
+
+              h = 0.3046927
+              n = 84.54397
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+> 
+> v <- matrix(c(25, 70, 7, 80), ncol = 2, byrow = T)
+> v
+     [,1] [,2]
+[1,]   25   70
+[2,]    7   80
+> chisq.test(v)
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  v
+X-squared = 9.2374, df = 1, p-value = 0.002371
+
+> 
+> prop.power <- function(n1, n2, p1, p2) {
++   twobytwo=matrix(NA, nrow = 10000, ncol = 4)
++   twobytwo[,1] = rbinom(n = 10000, size = n1, prob = p1)
++   twobytwo[,2] = n1-twobytwo[,1]
++   twobytwo[,3] = rbinom(n = 10000, size = n2, prob = p2)
++   twobytwo[,4] = n1 - twobytwo[, 3]
++   a = rep(NA, 10000)
++   chisq.test.v = function(x) 
++   as.numeric(chisq.test(matrix(x, ncol = 2), correct = FALSE)[3])
++   a = apply(twobytwo, 1, chisq.test.v)
++   power = sum(ifelse(a < 0.05, 1, 0))/10000
++   return(power)
++ }
+> 
+> prop.power(50, 50, 0.50, 0.30)
+[1] 0.5545
+> 
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz9/2[0m[27m[24m[JNikon@MBP-Nikon 2 % [K[?2004heexit[?2004l
+
+Script done on Wed Nov 18 14:40:51 2020

@@ -1,0 +1,221 @@
+Script started on Mon Oct 19 18:57:50 2020
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz6/2-3[0m[27m[24m[JNikon@MBP-Nikon 2-3 % [K[?2004hexitR --no-save <task1.r [21Dexit                [16DR --no-save <task1.r .r 2.r -.r 3.r [?2004l
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R -- это свободное ПО, и оно поставляется безо всяких гарантий.
+Вы вольны распространять его при соблюдении некоторых условий.
+Введите 'license()' для получения более подробной информации.
+
+R -- это проект, в котором сотрудничает множество разработчиков.
+Введите 'contributors()' для получения дополнительной информации и
+'citation()' для ознакомления с правилами упоминания R и его пакетов
+в публикациях.
+
+Введите 'demo()' для запуска демонстрационных программ, 'help()' -- для
+получения справки, 'help.start()' -- для доступа к справке через браузер.
+Введите 'q()', чтобы выйти из R.
+
+> #Сгенерировать данные из нормального распределения с различными параметрами и провести анализ с помощью графиков квантилей, метода огибающих, а также стандартных процедур проверки гипотез о нормальности, рассмотренных на семинаре (6 тестов). Рассмотреть выборки малого (не более 50-100 элементов) и умеренного (1000-5000 наблюдений) объемов.
+> #Сгенерировать данные из комбинаций, реализованных в R распределений, а затем провести анализ с помощью графиков квантилей, метода огибающих, а также стандартных процедур проверки гипотез о нормальности. Рассмотреть выборки малого и умеренного объемов. Сравнить эффективность методов
+> 
+> library(ggplot2)
+> library(gridExtra)
+> library(nortest)
+> 
+> small_data = data.frame(
++ Factor = rep(c("1", "2"), each = 50),
++ Variable = c(rnorm(50, 5, 2),
++ rnorm(50, 4, 3)))
+> big_data = data.frame(
++ Factor = rep(c("1", "2"), each = 2500),
++ Variable = c(rnorm(2500, 5),
++ rnorm(2500, 4)))
+> set.seed(123)
+> lambda <- 0.2
+> n <- 5000
+> data_expBig <- data.frame(x = rexp(n, lambda))
+> q <- 100
+> data_expSmall <- data.frame(x = rexp(q, lambda))
+> graf_small <- ggplot(small_data, aes(Variable, group = Factor, fill = Factor)) + geom_density(alpha = 1/2)
+> graf_big <- ggplot(big_data, aes(Variable, group = Factor, fill = Factor)) + geom_density(alpha = 1/2)
+> ExponentialBig <- (ggplot(data_expBig, aes(x = x)) + ylab("") +
++ geom_histogram(aes(y=..density..), binwidth=0.5, color="black", fill="white") +
++ ggtitle("
++ exponential distribution") + geom_density(alpha = 0.2, fill = "#102C60"))
+> ExponentialSmall <- (ggplot(data_expSmall, aes(x = x)) + ylab("") +
++ geom_histogram(aes(y=..density..), binwidth=0.5, color="black", fill="white") + ggtitle("
++ exponential distribution") + geom_density(alpha = 0.2, fill = "#102C60"))
+> graf_small + facet_grid()
+> graf_big + facet_grid()
+> plot(ExponentialBig) 
+> plot(ExponentialSmall)
+> grid.arrange(graf_small, ExponentialSmall, graf_big, ExponentialBig, ncol = 2)
+> qqnorm(small_data$Variable)
+> qqline(small_data$Variable) 
+> qqnorm(big_data$Variable)
+> qqline(big_data$Variable) 
+> qqnorm(data_expBig$x)
+> qqline(data_expBig$x) 
+> qqnorm(data_expSmall$x)
+> qqline(data_expSmall$x) 
+> x <- sort(rweibull(100, 2, (1 + 1.21*rbinom(100, 1, 0.05)) ))
+> c(mean(x), sd(x))
+[1] 0.9337549 0.4389801
+> SmallV <- sort(rweibull(100, 2, (1 + 1.21*rbinom(100, 1, 0.05)) ))
+> c(mean(small_data$Variable), sd(small_data$Variable))
+[1] 4.343480 2.371713
+> shapiro.test(small_data$Variable)
+
+	Shapiro-Wilk normality test
+
+data:  small_data$Variable
+W = 0.98799, p-value = 0.5078
+
+> ad.test(small_data$Variable)
+
+	Anderson-Darling normality test
+
+data:  small_data$Variable
+A = 0.35013, p-value = 0.4659
+
+> cvm.test(small_data$Variable)
+
+	Cramer-von Mises normality test
+
+data:  small_data$Variable
+W = 0.052076, p-value = 0.4776
+
+> lillie.test(small_data$Variable)
+
+	Lilliefors (Kolmogorov-Smirnov) normality test
+
+data:  small_data$Variable
+D = 0.065729, p-value = 0.358
+
+> sf.test(small_data$Variable)
+
+	Shapiro-Francia normality test
+
+data:  small_data$Variable
+W = 0.99045, p-value = 0.6095
+
+> shapiro.test(big_data$Variable)
+
+	Shapiro-Wilk normality test
+
+data:  big_data$Variable
+W = 0.99973, p-value = 0.7927
+
+> ad.test(big_data$Variable)
+
+	Anderson-Darling normality test
+
+data:  big_data$Variable
+A = 0.25904, p-value = 0.7145
+
+> cvm.test(big_data$Variable)
+
+	Cramer-von Mises normality test
+
+data:  big_data$Variable
+W = 0.035292, p-value = 0.7663
+
+> lillie.test(big_data$Variable)
+
+	Lilliefors (Kolmogorov-Smirnov) normality test
+
+data:  big_data$Variable
+D = 0.0096744, p-value = 0.309
+
+> sf.test(big_data$Variable)
+
+	Shapiro-Francia normality test
+
+data:  big_data$Variable
+W = 0.9997, p-value = 0.6415
+
+> shapiro.test(data_expBig$x)
+
+	Shapiro-Wilk normality test
+
+data:  data_expBig$x
+W = 0.81615, p-value < 2.2e-16
+
+> ad.test(data_expBig$x)
+
+	Anderson-Darling normality test
+
+data:  data_expBig$x
+A = 239.87, p-value < 2.2e-16
+
+> cvm.test(data_expBig$x)
+
+	Cramer-von Mises normality test
+
+data:  data_expBig$x
+W = 40.582, p-value = 7.37e-10
+
+Предупреждение:
+В cvm.test(data_expBig$x) :
+  p-value is smaller than 7.37e-10, cannot be computed more accurately
+> lillie.test(data_expSmall$x)
+
+	Lilliefors (Kolmogorov-Smirnov) normality test
+
+data:  data_expSmall$x
+D = 0.16956, p-value = 1.712e-07
+
+> sf.test(data_expSmall$x)
+
+	Shapiro-Francia normality test
+
+data:  data_expSmall$x
+W = 0.77763, p-value = 1.39e-09
+
+> shapiro.test(data_expBig$x)
+
+	Shapiro-Wilk normality test
+
+data:  data_expBig$x
+W = 0.81615, p-value < 2.2e-16
+
+> ad.test(data_expBig$x)
+
+	Anderson-Darling normality test
+
+data:  data_expBig$x
+A = 239.87, p-value < 2.2e-16
+
+> cvm.test(data_expBig$x)
+
+	Cramer-von Mises normality test
+
+data:  data_expBig$x
+W = 40.582, p-value = 7.37e-10
+
+Предупреждение:
+В cvm.test(data_expBig$x) :
+  p-value is smaller than 7.37e-10, cannot be computed more accurately
+> lillie.test(data_expBig$x)
+
+	Lilliefors (Kolmogorov-Smirnov) normality test
+
+data:  data_expBig$x
+D = 0.15853, p-value < 2.2e-16
+
+> sf.test(data_expBig$x)
+
+	Shapiro-Francia normality test
+
+data:  data_expBig$x
+W = 0.81595, p-value < 2.2e-16
+
+> 
+[1m[7m%[27m[1m[0m                                                                      ]7;file://MBP-Nikon.Dlink/Users/Nikon/Desktop/CMC%20MSU/MC/5%20sem/R/tz6/2-3[0m[27m[24m[JNikon@MBP-Nikon 2-3 % [K[?2004heexit[?2004l
+
+Script done on Tue Oct 6 18:57:59 2020
+
+
